@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -13,7 +16,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::with("category")->paginate(10);
+
+        return view("pages.post.index", compact("posts"));
     }
 
     /**
@@ -23,7 +28,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::orderBy("title", "asc")->get();
+
+        return view("pages.post.create", compact("categories"));
     }
 
     /**
@@ -34,7 +41,19 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            "title" => "required|max:191|unique:posts",
+            "category_id" => "required|numeric",
+            "content" => "required|max:1000",
+        ]);
+
+        $request["slug"] = Str::slug($request->title);
+
+        Post::create($request->only(
+            "title", "slug", "category_id", "content"
+        ));
+
+        return redirect()->route("posts.index")->with("success", "Post created!");
     }
 
     /**
@@ -56,7 +75,10 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        $categories = Category::orderBy("title", "asc")->get();
+
+        return view("pages.post.edit", compact("post", "categories"));
     }
 
     /**
@@ -68,7 +90,19 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            "title" => "required|max:191|unique:posts,title,".$id."id",
+            "category_id" => "required|numeric",
+            "content" => "required|max:1000",
+        ]);
+
+        $request["slug"] = Str::slug($request->title);
+
+        Post::where("id", $id)->first()->update($request->only(
+            "title", "slug", "category_id", "content"
+        ));
+
+        return redirect()->route("posts.index")->with("success", "Post created!");
     }
 
     /**
@@ -79,6 +113,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Post::destroy($id);
+
+        return redirect()->route("posts.index")->with("success", "Post deleted!");
     }
 }

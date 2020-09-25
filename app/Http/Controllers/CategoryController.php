@@ -88,9 +88,9 @@ class CategoryController extends Controller
 
         $request["slug"] = Str::slug($request->title);
 
-        Category::updated($request->only("title", "slug"));
+        Category::where("id", $id)->update($request->only("title", "slug"));
 
-        return redirect()->route("categories")->with("success", "Category updated!");
+        return redirect()->route("categories.index")->with("success", "Category updated!");
     }
 
     /**
@@ -101,6 +101,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Category::destroy($id);
+
+        return redirect()->route("categories.index")->with("success", "Category deleted!");
     }
 }

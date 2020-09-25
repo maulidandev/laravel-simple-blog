@@ -19,5 +19,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource("posts", PostController::class);
-Route::resource("categories", CategoryController::class);
+Route::resource("posts", PostController::class)->except(["show"]);
+Route::resource("categories", CategoryController::class)->except(["show"]);
