@@ -11,6 +11,8 @@
             <h2>Category</h2>
         </div>
         <div class="card-body">
+            @include('layouts._alert')
+
             <table class="table">
                 <tr>
                     <th>No</th>

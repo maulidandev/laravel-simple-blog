@@ -46,7 +46,7 @@ class CategoryController extends Controller
 
         Category::create($request->only("title", "slug"));
 
-        return redirect()->back()->with("success", "Category created!");
+        return redirect()->route("categories.index")->with("success", "Category created!");
     }
 
     /**
@@ -90,7 +90,7 @@ class CategoryController extends Controller
 
         Category::updated($request->only("title", "slug"));
 
-        return redirect()->back()->with("success", "Category updated!");
+        return redirect()->route("categories")->with("success", "Category updated!");
     }
 
     /**

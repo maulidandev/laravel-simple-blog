@@ -8,8 +8,6 @@
                     <h2>Create Category</h2>
                 </div>
                 <div class="card-body">
-                    @include('layouts._alert')
-
                     <form action="{{ route("categories.store") }}" method="post">
                         @csrf
 
