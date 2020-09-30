@@ -16,7 +16,7 @@ class DeleteCategoryControllerTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function testDeleteCategory()
     {
         $category = Category::factory()->create();
 

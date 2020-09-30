@@ -34,14 +34,14 @@ class CreateCategoryControllerTest extends TestCase
     }
 
     public function testUsingNotUniqueTitle(){
-        if ($category = Category::first()){
-            $response = $this->from(route("categories.create"))
-                ->post(route("categories.store"), [
-                    "title" => $category->title
-                ]);
+        $category = Category::factory()->create();
 
-            $response->assertStatus(302);
-            $response->assertRedirect(route("categories.create"));
-        }
+        $response = $this->from(route("categories.create"))
+            ->post(route("categories.store"), [
+                "title" => $category->title
+            ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route("categories.create"));
     }
 }
