@@ -38,7 +38,7 @@ class CreatePostControllerTest extends TestCase
 
         $response = $this->from(route("posts.create"))
             ->post(route("posts.store"), [
-                "title" => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae interdum arcu. Quisque sagittis venenatis massa in lobortis. Morbi pretium aliquet arcu vitae volutpat. Aliquam blandit feugiat ultricies. Quisque rutrum pulvinar bibendum. Maecenas sollicitudin lectus sit amet venenatis viverra. Cras sit amet gravida arcu. Nulla semper bibendum fermentum. Praesent a elit gravida dolor tempor tempor eu non neque. Cras efficitur lorem ut nulla dictum hendrerit.",
+                "title" => $this->faker->words(500, true),
                 "category_id" => $category->id,
                 "content" => $this->faker->text
             ]);
