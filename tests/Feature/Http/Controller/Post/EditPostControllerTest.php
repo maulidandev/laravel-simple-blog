@@ -11,6 +11,7 @@ use Tests\TestCase;
 class EditPostControllerTest extends TestCase
 {
     use WithFaker;
+    use RefreshDatabase;
 
     /**
      * A basic feature test example.

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controller\Category;
 
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -17,6 +18,8 @@ class IndexCategoryControllerTest extends TestCase
      */
     public function testAccessIndex()
     {
+        Category::factory()->count(10)->create();
+
         $response = $this->get(route("categories.index"));
 
         $response->assertStatus(200);
