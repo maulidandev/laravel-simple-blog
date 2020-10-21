@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -36,12 +37,8 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $request->validate([
-            "title" => "required|unique:categories|max:191"
-        ]);
-
         $request["slug"] = Str::slug($request->title);
 
         Category::create($request->only("title", "slug"));
@@ -80,11 +77,11 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-        $request->validate([
-            "title" => "required|max:191|unique:categories,title,".$id.",id"
-        ]);
+//        $request->validate([
+//            "title" => "required|max:191|unique:categories,title,".$id.",id"
+//        ]);
 
         $request["slug"] = Str::slug($request->title);
 
