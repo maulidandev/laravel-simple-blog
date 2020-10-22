@@ -27,6 +27,7 @@ class PostRequest extends FormRequest
             "title" => $this->titleRules(),
             "category_id" => "required|numeric",
             "content" => "required|max:1000",
+            "new_category" => "required_if:category_id,-1"
         ];
     }
 
@@ -40,5 +41,12 @@ class PostRequest extends FormRequest
         }
 
         return $rule;
+    }
+
+    public function messages()
+    {
+        return [
+            "new_category.required_if" => "The new category field is required."
+        ];
     }
 }

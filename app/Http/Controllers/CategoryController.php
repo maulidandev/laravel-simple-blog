@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Business\CategoryBusiness;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -41,9 +41,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $request["slug"] = Str::slug($request->title);
-
-        Category::create($request->only("title", "slug"));
+        CategoryBusiness::store($request->title);
 
         return redirect()->route("categories.index")->with("success", "Category created!");
     }

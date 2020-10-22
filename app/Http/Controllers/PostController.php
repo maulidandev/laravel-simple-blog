@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Business\CategoryBusiness;
+use App\Business\PostBusiness;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
@@ -28,7 +30,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category::orderBy("title", "asc")->get();
+        $categories = PostBusiness::getAllCategories();
         $post = new Post();
         $action = route("posts.store");
 
@@ -45,8 +47,8 @@ class PostController extends Controller
     {
         $request["slug"] = Str::slug($request->title);
 
-        Post::create($request->only(
-            "title", "slug", "category_id", "content"
+        PostBusiness::store($request->only(
+            "title", "slug", "category_id", "content", "new_category"
         ));
 
         return redirect()->route("posts.index")->with("success", "Post created!");
@@ -72,7 +74,7 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-        $categories = Category::orderBy("title", "asc")->get();
+        $categories = PostBusiness::getAllCategories();
         $action = route("posts.update", $post->id);
 
         return view("pages.post.edit", compact("post", "categories", "action"));
@@ -87,17 +89,13 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
-        $request->validate([
-            "title" => "required|max:191|unique:posts,title,".$id."id",
-            "category_id" => "required|numeric",
-            "content" => "required|max:1000",
-        ]);
-
         $request["slug"] = Str::slug($request->title);
 
-        Post::where("id", $id)->first()->update($request->only(
-            "title", "slug", "category_id", "content"
-        ));
+        $data = $request->only(
+            "title", "slug", "category_id", "content", "new_category"
+        );
+
+        PostBusiness::update($data, $id);
 
         return redirect()->route("posts.index")->with("success", "Post updated!");
     }
