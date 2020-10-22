@@ -20,6 +20,8 @@ class IndexPostControllerTest extends TestCase
     {
         Post::factory()->count(10)->create();
 
+        $this->assertDatabaseCount("posts", 10);
+
         $response = $this->get(route("posts.index"));
 
         $response->assertStatus(200);

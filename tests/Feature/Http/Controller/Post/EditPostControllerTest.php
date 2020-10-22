@@ -23,13 +23,21 @@ class EditPostControllerTest extends TestCase
         $post = Post::factory()->create();
         $category = Category::factory()->create();
 
+        $this->assertDatabaseHas("posts", ["id" => $post->id]);
+        $this->assertDatabaseHas("categories", ["id" => $category->id]);
+
+        $data = [
+            "title" => $this->faker->words(3, true),
+            "category_id" => $category->id,
+            "content" => $this->faker->text,
+            "_method" => "put",
+        ];
+
         $response = $this->from(route("posts.edit", $post->id))
-            ->post(route("posts.update", $post->id), [
-                "title" => $this->faker->words(3, true),
-                "category_id" => $category->id,
-                "content" => $this->faker->text,
-                "_method" => "put",
-            ]);
+            ->post(route("posts.update", $post->id), $data);
+
+        unset($data["_method"]);
+        $this->assertDatabaseHas("posts", $data);
 
         $response->assertStatus(302);
         $response->assertRedirect(route("posts.index"));

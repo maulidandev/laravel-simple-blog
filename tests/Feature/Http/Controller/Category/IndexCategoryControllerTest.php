@@ -20,6 +20,8 @@ class IndexCategoryControllerTest extends TestCase
     {
         Category::factory()->count(10)->create();
 
+        $this->assertDatabaseCount("categories", 10);
+
         $response = $this->get(route("categories.index"));
 
         $response->assertStatus(200);

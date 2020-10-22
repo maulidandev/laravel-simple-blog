@@ -20,10 +20,18 @@ class DeleteCategoryControllerTest extends TestCase
     {
         $category = Category::factory()->create();
 
+        $this->assertDatabaseHas("categories", [
+            "id" => $category->id
+        ]);
+
         $response = $this->from(route("categories.edit", $category->id))
             ->post(route("categories.destroy", $category->id), [
                 "_method" => "delete"
             ]);
+
+        $this->assertDatabaseMissing("categories", [
+            "id" => $category->id
+        ]);
 
         $response->assertStatus(302);
         $response->assertRedirect(route("categories.index"));

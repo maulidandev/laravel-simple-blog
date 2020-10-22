@@ -19,11 +19,14 @@ class DeletePostControllerTest extends TestCase
     public function testDeletePost()
     {
         $post = Post::factory()->create();
+        $this->assertDatabaseHas("posts", ["id" => $post->id]);
 
         $response = $this->from(route("posts.index", $post->id))
             ->post(route("posts.destroy", $post->id), [
                 "_method" => "delete"
             ]);
+
+        $this->assertDatabaseCount("posts", 0);
 
         $response->assertStatus(302);
         $response->assertRedirect(route("posts.index"));
