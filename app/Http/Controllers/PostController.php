@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -30,8 +29,10 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::orderBy("title", "asc")->get();
+        $post = new Post();
+        $action = route("posts.store");
 
-        return view("pages.post.create", compact("categories"));
+        return view("pages.post.create", compact("categories", "post", "action"));
     }
 
     /**
@@ -72,8 +73,9 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $categories = Category::orderBy("title", "asc")->get();
+        $action = route("posts.update", $post->id);
 
-        return view("pages.post.edit", compact("post", "categories"));
+        return view("pages.post.edit", compact("post", "categories", "action"));
     }
 
     /**
@@ -97,7 +99,7 @@ class PostController extends Controller
             "title", "slug", "category_id", "content"
         ));
 
-        return redirect()->route("posts.index")->with("success", "Post created!");
+        return redirect()->route("posts.index")->with("success", "Post updated!");
     }
 
     /**

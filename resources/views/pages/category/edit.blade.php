@@ -12,13 +12,7 @@
                         <input type="hidden" name="_method" value="put">
                         @csrf
 
-                        <div class="form-group">
-                            <label for="title">Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old("title", $category->title) }}">
-                            @error('title')
-                                <div class="text-danger small">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @include("pages.category._form")
 
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>

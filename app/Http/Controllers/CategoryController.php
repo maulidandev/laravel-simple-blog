@@ -28,7 +28,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view("pages.category.create");
+        $category = new Category();
+
+        return view("pages.category.create", compact("category"));
     }
 
     /**
@@ -79,10 +81,6 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
-//        $request->validate([
-//            "title" => "required|max:191|unique:categories,title,".$id.",id"
-//        ]);
-
         $request["slug"] = Str::slug($request->title);
 
         Category::where("id", $id)->update($request->only("title", "slug"));
