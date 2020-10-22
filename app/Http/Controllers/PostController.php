@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Business\CategoryBusiness;
 use App\Business\PostBusiness;
 use App\Http\Requests\PostRequest;
-use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Support\Str;
 
@@ -47,9 +45,12 @@ class PostController extends Controller
     {
         $request["slug"] = Str::slug($request->title);
 
-        PostBusiness::store($request->only(
+        $data = $request->only(
             "title", "slug", "category_id", "content", "new_category"
-        ));
+        );
+
+        $data = PostBusiness::insertNewCategory($data);
+        Post::create($data);
 
         return redirect()->route("posts.index")->with("success", "Post created!");
     }
@@ -95,7 +96,8 @@ class PostController extends Controller
             "title", "slug", "category_id", "content", "new_category"
         );
 
-        PostBusiness::update($data, $id);
+        $data = PostBusiness::insertNewCategory($data);
+        Post::where("id", $id)->update($data);
 
         return redirect()->route("posts.index")->with("success", "Post updated!");
     }

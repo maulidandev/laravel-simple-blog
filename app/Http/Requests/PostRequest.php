@@ -27,7 +27,7 @@ class PostRequest extends FormRequest
             "title" => $this->titleRules(),
             "category_id" => "required|numeric",
             "content" => "required|max:1000",
-            "new_category" => "required_if:category_id,-1"
+            "new_category" => "required_if:category_id,-1|unique:categories,title"
         ];
     }
 

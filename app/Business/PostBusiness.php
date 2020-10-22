@@ -10,7 +10,6 @@ namespace App\Business;
 
 
 use App\Models\Category;
-use App\Models\Post;
 
 class PostBusiness
 {
@@ -31,21 +30,7 @@ class PostBusiness
         return $category;
     }
 
-    public static function store($data){
-        $self = new Self;
-
-        $data = $self->insertNewCategory($data);
-        return Post::create($data);
-    }
-
-    public static function update($data, $id){
-        $self = new Self;
-
-        $data = $self->insertNewCategory($data);
-        return Post::where("id", $id)->update($data);
-    }
-
-    private function insertNewCategory($data){
+    public static function insertNewCategory($data){
         if ($data["category_id"] == -1){
             $category = CategoryBusiness::store($data["new_category"]);
             $data["category_id"] = $category->id;
