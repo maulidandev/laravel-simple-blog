@@ -31,4 +31,15 @@ class DeletePostControllerTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect(route("posts.index"));
     }
+
+    /**
+     * delete invalid id (id not exists)
+     */
+    public function testUsingInvalidID(){
+        $this->assertDatabaseMissing("posts", ["id" => 1]);
+
+        $response = $this->json("delete", route("posts.destroy", 1));
+
+        $response->assertStatus(404);
+    }
 }

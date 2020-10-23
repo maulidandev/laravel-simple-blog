@@ -25,7 +25,7 @@ class PostRequest extends FormRequest
     {
         return [
             "title" => $this->titleRules(),
-            "category_id" => "required|numeric",
+            "category_id" => "required|numeric|exists:categories,id",
             "content" => "required|max:1000",
             "new_category" => "required_if:category_id,-1|unique:categories,title"
         ];

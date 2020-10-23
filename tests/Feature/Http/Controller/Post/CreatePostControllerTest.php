@@ -71,6 +71,25 @@ class CreatePostControllerTest extends TestCase
         $response->assertRedirect(route("posts.create"));
     }
 
+    /**
+     * if invalid category (category id not exist)
+     */
+    public function testUsingInvalidCategoryID(){
+        $data = $this->getCreateFields();
+        $data["category_id"] += 1;
+
+        $this->assertDatabaseMissing("categories", ["id" => $data["category_id"]]);
+
+        $response = $this->from(route("posts.create"))
+            ->post(route("posts.store"), $data);
+
+        $this->assertDatabaseCount("posts", 0);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["category_id"]);
+        $response->assertRedirect(route("posts.create"));
+    }
+
     private function getCreateFields($overrides = []){
         $category = Category::factory()->create();
 
