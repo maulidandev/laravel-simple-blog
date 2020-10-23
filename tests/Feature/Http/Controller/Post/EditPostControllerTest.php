@@ -42,4 +42,56 @@ class EditPostControllerTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect(route("posts.index"));
     }
+
+    public function testUsingInvalidData()
+    {
+        $post = Post::factory()->create();
+        $category = Category::factory()->create();
+
+        $this->assertDatabaseHas("posts", ["id" => $post->id]);
+        $this->assertDatabaseHas("categories", ["id" => $category->id]);
+
+        $data = [
+            "title" => $this->faker->words(500, true),
+            "category_id" => $category->id,
+            "content" => $this->faker->text,
+            "_method" => "put",
+        ];
+
+        $response = $this->from(route("posts.edit", $post->id))
+            ->post(route("posts.update", $post->id), $data);
+
+        unset($data["_method"]);
+        $this->assertDatabaseMissing("posts", $data);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["title"]);
+        $response->assertRedirect(route("posts.edit", $post->id));
+    }
+
+    public function testUsingNotUniqueTitle()
+    {
+        $post = Post::factory()->create();
+        $category = Category::factory()->create();
+
+        $this->assertDatabaseHas("posts", ["id" => $post->id]);
+        $this->assertDatabaseHas("categories", ["id" => $category->id]);
+
+        $data = [
+            "title" => $this->faker->words(500, true),
+            "category_id" => $category->id,
+            "content" => $this->faker->text,
+            "_method" => "put",
+        ];
+
+        $response = $this->from(route("posts.edit", $post->id))
+            ->post(route("posts.update", $post->id), $data);
+
+        unset($data["_method"]);
+        $this->assertDatabaseMissing("posts", $data);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["title"]);
+        $response->assertRedirect(route("posts.edit", $post->id));
+    }
 }
