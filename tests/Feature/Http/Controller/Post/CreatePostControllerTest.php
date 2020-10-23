@@ -90,6 +90,85 @@ class CreatePostControllerTest extends TestCase
         $response->assertRedirect(route("posts.create"));
     }
 
+    /**
+     * test new category
+     */
+    public function testWithNewCategory(){
+        $data = $this->getCreateFields(["category_id" => -1, "new_category" => $this->faker->unique()->words(3, true)]);
+
+        $response = $this->from(route("posts.create"))
+            ->post(route("posts.store", $data));
+
+        $this->assertDatabaseHas("categories", [
+            "title" => $data["new_category"]
+        ]);
+
+        $this->assertDatabaseHas("posts", [
+            "title" => $data["title"]
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route("posts.index"));
+    }
+
+    /**
+     * test new category required title category
+     */
+    public function testWithInvalidNewCategory(){
+        $data = $this->getCreateFields(["category_id" => -1]);
+
+        $response = $this->from(route("posts.create"))
+            ->post(route("posts.store", $data));
+
+        $this->assertDatabaseMissing("posts", [
+            "title" => $data["title"]
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["new_category"]);
+        $response->assertRedirect(route("posts.create"));
+    }
+
+    /**
+     * test new category title more than 191
+     */
+    public function testWithNewCategoryInvalidLength(){
+        $data = $this->getCreateFields(["category_id" => -1, "new_category" => $this->faker->unique()->words(100, true)]);
+
+        $response = $this->from(route("posts.create"))
+            ->post(route("posts.store", $data));
+
+        $this->assertDatabaseMissing("categories", [
+            "title" => $data["new_category"]
+        ]);
+
+        $this->assertDatabaseMissing("posts", [
+            "title" => $data["title"]
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["new_category"]);
+        $response->assertRedirect(route("posts.create"));
+    }
+
+    /**
+     * test new category title not unique
+     */
+    public function testWithNotUniqueNewCategory(){
+        $data = $this->getCreateFields(["category_id" => -1, "new_category" => Category::factory()->create()->title]);
+
+        $response = $this->from(route("posts.create"))
+            ->post(route("posts.store", $data));
+
+        $this->assertDatabaseMissing("posts", [
+            "title" => $data["title"]
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["new_category"]);
+        $response->assertRedirect(route("posts.create"));
+    }
+
     private function getCreateFields($overrides = []){
         $category = Category::factory()->create();
 
