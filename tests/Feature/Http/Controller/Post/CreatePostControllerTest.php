@@ -21,11 +21,7 @@ class CreatePostControllerTest extends TestCase
     public function testUsingValidData()
     {
         $category = Category::factory()->create();
-        $data = [
-            "title" => $this->faker->words(3, true),
-            "category_id" => $category->id,
-            "content" => $this->faker->text
-        ];
+        $data = $this->getCreateFields();
 
         $this->assertDatabaseHas("categories", ["id" => $category->id]);
         $this->assertDatabaseCount("posts", 0);
@@ -55,6 +51,7 @@ class CreatePostControllerTest extends TestCase
         $this->assertDatabaseCount("posts", 0);
 
         $response->assertStatus(302);
+        $response->assertSessionHasErrors(["title"]);
         $response->assertRedirect(route("posts.create"));
     }
 
@@ -62,18 +59,25 @@ class CreatePostControllerTest extends TestCase
         $post = Post::factory()->create();
         $this->assertDatabaseHas("posts", ["id" => $post->id]);
 
-        $category = Category::factory()->create();
+        $data = $this->getCreateFields(["title" => $post->title]);
 
         $response = $this->from(route("posts.create"))
-            ->post(route("posts.store"), [
-                "title" => $post->title,
-                "category_id" => $category->id,
-                "content" => $this->faker->text
-            ]);
+            ->post(route("posts.store"), $data);
 
         $this->assertDatabaseCount("posts", 1);
 
         $response->assertStatus(302);
+        $response->assertSessionHasErrors(["title"]);
         $response->assertRedirect(route("posts.create"));
+    }
+
+    private function getCreateFields($overrides = []){
+        $category = Category::factory()->create();
+
+        return array_merge([
+            "title" => $this->faker->words(3, true),
+            "category_id" => $category->id,
+            "content" => $this->faker->text
+        ], $overrides);
     }
 }

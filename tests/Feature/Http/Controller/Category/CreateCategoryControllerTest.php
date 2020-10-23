@@ -30,18 +30,17 @@ class CreateCategoryControllerTest extends TestCase
     }
 
     public function testUsingInvalidTitle(){
-        $title = $this->faker->words(500, true);
+        $data = [
+            "title" => $this->faker->words(500, true)
+        ];
 
         $response = $this->from(route("categories.create"))
-            ->post(route("categories.store"), [
-                "title" => $title
-            ]);
+            ->post(route("categories.store"), $data);
 
-        $this->assertDatabaseMissing('categories', [
-            'title' => $title,
-        ]);
+        $this->assertDatabaseMissing('categories', $data);
 
         $response->assertStatus(302);
+        $response->assertSessionHasErrors(["title"]);
         $response->assertRedirect(route("categories.create"));
     }
 
@@ -60,6 +59,7 @@ class CreateCategoryControllerTest extends TestCase
         $this->assertDatabaseCount('categories', 1);
 
         $response->assertStatus(302);
+        $response->assertSessionHasErrors(["title"]);
         $response->assertRedirect(route("categories.create"));
     }
 }
