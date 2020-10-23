@@ -74,7 +74,7 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = Post::find($id);
+        $post = Post::findOrFail($id);
         $categories = PostBusiness::getAllCategories();
         $action = route("posts.update", $post->id);
 
@@ -90,6 +90,8 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
+        $post = Post::findOrFail($id);
+
         $request["slug"] = Str::slug($request->title);
 
         $data = $request->only(
@@ -97,7 +99,7 @@ class PostController extends Controller
         );
 
         $data = PostBusiness::insertNewCategory($data);
-        Post::where("id", $id)->update($data);
+        $post->update($data);
 
         return redirect()->route("posts.index")->with("success", "Post updated!");
     }
@@ -110,7 +112,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        Post::destroy($id);
+        $post = Post::findOrFail($id);
+        $post->delete();
 
         return redirect()->route("posts.index")->with("success", "Post deleted!");
     }

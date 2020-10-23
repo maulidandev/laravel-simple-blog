@@ -24,7 +24,7 @@ class DeleteCategoryControllerTest extends TestCase
             "id" => $category->id
         ]);
 
-        $response = $this->from(route("categories.edit", $category->id))
+        $response = $this->from(route("categories.index"))
             ->post(route("categories.destroy", $category->id), [
                 "_method" => "delete"
             ]);
@@ -35,5 +35,17 @@ class DeleteCategoryControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect(route("categories.index"));
+    }
+
+    public function testDeleteInvalidID(){
+        $category = Category::factory()->create();
+
+        $this->assertDatabaseMissing("categories", [
+            "id" => $category->id+1
+        ]);
+
+        $response = $this->json("delete", route("categories.destroy", $category->id+1));
+
+        $response->assertStatus(404);
     }
 }

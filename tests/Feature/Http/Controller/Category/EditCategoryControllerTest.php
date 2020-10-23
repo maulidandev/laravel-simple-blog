@@ -80,4 +80,23 @@ class EditCategoryControllerTest extends TestCase
         $response->assertSessionHasErrors(["title"]);
         $response->assertRedirect(route("categories.edit", $categories[0]->id));
     }
+
+    public function testAccessNotValidID(){
+        $category = Category::factory()->create();
+
+        $response = $this->get(route("categories.edit", $category->id+1));
+
+        $response->assertStatus(404);
+    }
+
+    public function testUsingNotValidID(){
+        $category = Category::factory()->create();
+
+        $response = $this->from(route("categories.edit", $category->id+100))
+            ->json("put", route("categories.update", ($category->id+100)), [
+                "title" => "invalid"
+            ]);
+
+        $response->assertStatus(404);
+    }
 }

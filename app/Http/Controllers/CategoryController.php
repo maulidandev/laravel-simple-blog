@@ -65,7 +65,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::find($id);
+        $category = Category::findOrFail($id);
 
         return view("pages.category.edit", compact("category"));
     }
@@ -79,9 +79,11 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
+        $category = Category::findOrFail($id);
+
         $request["slug"] = Str::slug($request->title);
 
-        Category::where("id", $id)->update($request->only("title", "slug"));
+        $category->update($request->only("title", "slug"));
 
         return redirect()->route("categories.index")->with("success", "Category updated!");
     }
@@ -94,7 +96,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::destroy($id);
+        $category = Category::findOrFail($id);
+        $category->delete();
 
         return redirect()->route("categories.index")->with("success", "Category deleted!");
     }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CategoryExistOrNew;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PostRequest extends FormRequest
 {
@@ -25,9 +27,9 @@ class PostRequest extends FormRequest
     {
         return [
             "title" => $this->titleRules(),
-            "category_id" => "required|numeric",
+            "category_id" => ["required", "numeric", new CategoryExistOrNew()],
             "content" => "required|max:1000",
-            "new_category" => "required_if:category_id,-1|unique:categories,title"
+            "new_category" => "required_if:category_id,-1|max:191|unique:categories,title"
         ];
     }
 

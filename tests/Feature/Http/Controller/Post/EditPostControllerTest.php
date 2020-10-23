@@ -82,6 +82,45 @@ class EditPostControllerTest extends TestCase
         $response->assertRedirect(route("posts.edit", $posts[0]->id));
     }
 
+    // access edit form using invalid id (id not exist)
+    public function testAccessEditFormUsingInvalidID(){
+        $post = Post::factory()->create();
+
+        $this->assertDatabaseMissing("posts", ["id" => $post->id+1]);
+
+        $response = $this->get(route("posts.edit", $post->id+1));
+
+        $response->assertStatus(404);
+    }
+
+    // put new data using invalid id (id not exist)
+    public function testPutUsingInvalidID(){
+        $post = Post::factory()->create();
+
+        $this->assertDatabaseMissing("posts", ["id" => $post->id+1]);
+
+        $response = $this->json("put", route("posts.update", $post->id+1), $this->getEditPostData());
+
+        $response->assertStatus(404);
+    }
+
+    // edit using invalid category id
+    public function testPutUsingInvalidCategoryID(){
+        $post = Post::factory()->create();
+
+        $data = $this->getEditPostData();
+        $data["category_id"] += 1;
+
+        $this->assertDatabaseMissing("categories", ["id" => $data["category_id"]]);
+
+        $response = $this->from(route("posts.edit", $post->id))
+            ->post(route("posts.update", $post->id), $data);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(["category_id"]);
+        $response->assertRedirect(route("posts.edit", $post->id));
+    }
+
     private function getEditPostData($overrides = []){
         $category = Category::factory()->create();
 
