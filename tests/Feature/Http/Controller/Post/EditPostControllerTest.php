@@ -21,17 +21,14 @@ class EditPostControllerTest extends TestCase
     public function testUsingValidData()
     {
         $post = Post::factory()->create();
-        $category = Category::factory()->create();
+        $data = $this->getEditPostData();
 
-        $this->assertDatabaseHas("posts", ["id" => $post->id]);
-        $this->assertDatabaseHas("categories", ["id" => $category->id]);
-
-        $data = [
-            "title" => $this->faker->words(3, true),
-            "category_id" => $category->id,
-            "content" => $this->faker->text,
-            "_method" => "put",
-        ];
+        $this->assertDatabaseHas("posts", [
+            "id" => $post->id,
+            "title" => $post->title,
+            "category_id" => $post->category_id,
+            "content" => $post->content,
+        ]);
 
         $response = $this->from(route("posts.edit", $post->id))
             ->post(route("posts.update", $post->id), $data);
@@ -46,17 +43,14 @@ class EditPostControllerTest extends TestCase
     public function testUsingInvalidData()
     {
         $post = Post::factory()->create();
-        $category = Category::factory()->create();
+        $data = $this->getEditPostData(["title" => $this->faker->words(500, true)]);
 
-        $this->assertDatabaseHas("posts", ["id" => $post->id]);
-        $this->assertDatabaseHas("categories", ["id" => $category->id]);
-
-        $data = [
-            "title" => $this->faker->words(500, true),
-            "category_id" => $category->id,
-            "content" => $this->faker->text,
-            "_method" => "put",
-        ];
+        $this->assertDatabaseHas("posts", [
+            "id" => $post->id,
+            "title" => $post->title,
+            "category_id" => $post->category_id,
+            "content" => $post->content,
+        ]);
 
         $response = $this->from(route("posts.edit", $post->id))
             ->post(route("posts.update", $post->id), $data);
@@ -71,27 +65,31 @@ class EditPostControllerTest extends TestCase
 
     public function testUsingNotUniqueTitle()
     {
-        $post = Post::factory()->create();
-        $category = Category::factory()->create();
+        $posts = Post::factory(2)->create();
 
-        $this->assertDatabaseHas("posts", ["id" => $post->id]);
-        $this->assertDatabaseHas("categories", ["id" => $category->id]);
+        foreach ($posts as $post)
+            $this->assertDatabaseHas("posts", [
+                "title" => $post->title,
+            ]);
 
-        $data = [
-            "title" => $this->faker->words(500, true),
-            "category_id" => $category->id,
-            "content" => $this->faker->text,
-            "_method" => "put",
-        ];
+        $data = $this->getEditPostData(["title" => $posts[1]]);
 
-        $response = $this->from(route("posts.edit", $post->id))
-            ->post(route("posts.update", $post->id), $data);
-
-        unset($data["_method"]);
-        $this->assertDatabaseMissing("posts", $data);
+        $response = $this->from(route("posts.edit", $posts[0]->id))
+            ->post(route("posts.update", $posts[0]->id), $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("posts.edit", $post->id));
+        $response->assertRedirect(route("posts.edit", $posts[0]->id));
+    }
+
+    private function getEditPostData($overrides = []){
+        $category = Category::factory()->create();
+
+        return array_merge([
+            "title" => $this->faker->words(3, true),
+            "category_id" => $category->id,
+            "content" => $this->faker->text,
+            "_method" => "put",
+        ], $overrides);
     }
 }
