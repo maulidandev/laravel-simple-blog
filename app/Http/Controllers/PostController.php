@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Business\PostBusiness;
 use App\Http\Requests\PostRequest;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,17 +19,21 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $search = $request->get("search");
+        $category_filter = $request->get("category");
+        $categories = Category::orderBy("title", "asc")->get();
 
         $posts = Post::with("category")->when($search, function ($query) use ($search){
             $query->where("title", "LIKE", "%$search%");
+        })->when($category_filter, function ($query) use ($category_filter){
+            $query->where("category_id", $category_filter);
         })->paginate(10);
 
-        $posts->appends(["search" => $search]);
+        $posts->appends(["search" => $search, "category" => $category_filter]);
 
         if ($request->isJson())
             return response()->json($posts);
 
-        return view("pages.post.index", compact("posts", "search"));
+        return view("pages.post.index", compact("posts", "search", "categories", "category_filter"));
     }
 
     /**

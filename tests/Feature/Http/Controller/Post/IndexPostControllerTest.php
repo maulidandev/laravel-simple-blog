@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controller\Post;
 
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -46,4 +47,26 @@ class IndexPostControllerTest extends TestCase
     }
 
     // access index with filter by category
+    public function testGetPostListWithFilterByCategory(){
+        $category = Category::factory()->create();
+        Post::factory()->count(5)->state([
+            "category_id" => $category->id
+        ])->create();
+
+        $category = Category::factory()->create();
+        Post::factory()->count(5)->state([
+            "category_id" => $category->id
+        ])->create();
+
+        $this->assertDatabaseCount("categories", 2);
+
+        $response = $this->withHeader("Content-Type", "application/json")
+            ->json("get", route("posts.index") . "?category=".$category->id);
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(5, "data.*.title");
+        $response->assertJson([
+            "first_page_url" => route("posts.index") . "?category=".$category->id."&page=1"
+        ]);
+    }
 }
