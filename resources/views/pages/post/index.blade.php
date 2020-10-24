@@ -13,13 +13,22 @@
         <div class="card-body">
             @include('layouts._alert')
 
+            <div class="mb-2">
+                <div class="float-right">
+                    <form>
+                        Search : <input type="text" name="search" class="form-control" value="{!! $search !!}">
+                    </form>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
             <table class="table">
                 <tr>
                     <th>No</th>
                     <th>Title</th>
                     <th>Category</th>
                     <th>Content</th>
-                    <th>#</th>
+                    <th width="1">#</th>
                 </tr>
 
                 @php $index = $posts->firstItem() @endphp

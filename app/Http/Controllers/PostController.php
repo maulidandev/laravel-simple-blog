@@ -15,11 +15,20 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with("category")->paginate(10);
+        $search = $request->get("search");
 
-        return view("pages.post.index", compact("posts"));
+        $posts = Post::with("category")->when($search, function ($query) use ($search){
+            $query->where("title", "LIKE", "%$search%");
+        })->paginate(10);
+
+        $posts->appends(["search" => $search]);
+
+        if ($request->isJson())
+            return response()->json($posts);
+
+        return view("pages.post.index", compact("posts", "search"));
     }
 
     /**
