@@ -28,7 +28,7 @@ class CategoryController extends Controller
         if ($request->isJson())
             return response()->json($categories);
 
-        return view("pages.category.index", compact("categories"));
+        return view("pages.category.index", compact("categories", "search"));
     }
 
     /**

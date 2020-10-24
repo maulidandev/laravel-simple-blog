@@ -13,12 +13,26 @@
         <div class="card-body">
             @include('layouts._alert')
 
+            <form>
+                <div class="row mb-2">
+                    <div class="offset-md-8 col-md-4">
+                        <div class="form-group">
+                            <label>Search</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" value="{{ $search }}">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
             <table class="table">
                 <tr>
                     <th>No</th>
                     <th>Title</th>
                     <th>Slug</th>
-                    <th>#</th>
+                    <th width="1">#</th>
                 </tr>
                 @php $index = $categories->firstItem() @endphp
                 @forelse ($categories as $category)
