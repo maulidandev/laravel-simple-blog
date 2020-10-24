@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Business\CategoryBusiness;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -14,9 +15,18 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::paginate(10);
+        $search = $request->get("search");
+
+        $categories = Category::when($search, function ($query) use ($search){
+            $query->where("title", "LIKE", "%$search%");
+        })->paginate(10);
+
+        $categories->appends(["search" => $search]);
+
+        if ($request->isJson())
+            return response()->json($categories);
 
         return view("pages.category.index", compact("categories"));
     }
