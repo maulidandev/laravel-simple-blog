@@ -12,6 +12,12 @@ class CreateCategoryControllerTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+    public function testAccessCreateForm(){
+        $response = $this->get(route("categories.create"));
+
+        $response->assertStatus(200);
+    }
+
     public function testUsingValidData()
     {
         $title = $this->faker->words(3, true);

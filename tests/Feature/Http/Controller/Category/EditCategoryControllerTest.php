@@ -12,6 +12,13 @@ class EditCategoryControllerTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+    public function testAccessEditForm(){
+        $category = Category::factory()->create();
+        $response = $this->get(route("categories.edit", $category->id));
+
+        $response->assertStatus(200);
+    }
+
     /**
      * A basic feature test example.
      *

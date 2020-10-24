@@ -13,6 +13,13 @@ class EditPostControllerTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+    public function testAccessEditForm(){
+        $post = Post::factory()->create();
+        $response = $this->get(route("posts.edit", $post->id));
+
+        $response->assertStatus(200);
+    }
+
     /**
      * A basic feature test example.
      *

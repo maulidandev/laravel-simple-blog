@@ -13,6 +13,12 @@ class CreatePostControllerTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+    public function testAccessCreateForm(){
+        $response = $this->get(route("posts.create"));
+
+        $response->assertStatus(200);
+    }
+
     /**
      * A basic feature test example.
      *
