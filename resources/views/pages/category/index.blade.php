@@ -45,10 +45,12 @@
                                 @csrf
                                 <input type="hidden" value="delete" name="_method">
 
-                                <div class="btn-group">
-                                    <a href="{{ route("categories.edit", $category->id) }}" class="btn btn-default border">Edit</a>
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </div>
+                                @if(!CategoryHelper::isUncategorize($category->id))
+                                    <div class="btn-group">
+                                        <a href="{{ route("categories.edit", $category->id) }}" class="btn btn-default border">Edit</a>
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </div>
+                                @endif
                             </form>
                         </td>
                     </tr>
