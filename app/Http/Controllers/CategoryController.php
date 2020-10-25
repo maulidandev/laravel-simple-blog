@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Business\CategoryBusiness;
+use App\Helpers\CategoryHelper;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -14,11 +16,20 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::paginate(10);
+        $search = $request->get("search");
 
-        return view("pages.category.index", compact("categories"));
+        $categories = Category::when($search, function ($query) use ($search){
+            $query->where("title", "LIKE", "%$search%");
+        })->paginate(10);
+
+        $categories->appends(["search" => $search]);
+
+        if ($request->isJson())
+            return response()->json($categories);
+
+        return view("pages.category.index", compact("categories", "search"));
     }
 
     /**
@@ -65,6 +76,9 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        if (CategoryHelper::isUncategorize($id))
+            return abort(403);
+
         $category = Category::findOrFail($id);
 
         return view("pages.category.edit", compact("category"));
@@ -79,6 +93,9 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
+        if (CategoryHelper::isUncategorize($id))
+            return abort(403);
+
         $category = Category::findOrFail($id);
 
         $request["slug"] = Str::slug($request->title);
@@ -96,6 +113,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        if ($id == 1)
+            return abort(403);
+
         $category = Category::findOrFail($id);
         $category->delete();
 

@@ -9,9 +9,10 @@
 <div class="form-group">
     <label for="category-id">Category</label>
     <select id="category-id" class="form-control @error('category_id') is-invalid @enderror" name="category_id">
-        <option selected disabled>-- Category --</option>
+        <option disabled>-- Category --</option>
         @foreach ($categories as $category)
-            <option value="{{ $category->id }}" {{ old("category_id", $post->id > 0 ? $post->category_id : null) == $category->id ? "selected" : "" }}>{{ $category->title }}</option>
+            @php $oldCategory = old("category_id", $post->id > 0 ? $post->category_id : 1) @endphp
+            <option value="{{ $category->id }}" {{ $oldCategory == $category->id ? "selected" : "" }}>{{ $category->title }}</option>
         @endforeach
     </select>
     @error('category_id')

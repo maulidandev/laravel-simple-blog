@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Business\PostBusiness;
 use App\Http\Requests\PostRequest;
+use App\Models\Category;
 use App\Models\Post;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -14,11 +16,24 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with("category")->paginate(10);
+        $search = $request->get("search");
+        $category_filter = $request->get("category");
+        $categories = Category::orderBy("title", "asc")->get();
 
-        return view("pages.post.index", compact("posts"));
+        $posts = Post::with("category")->when($search, function ($query) use ($search){
+            $query->where("title", "LIKE", "%$search%");
+        })->when($category_filter, function ($query) use ($category_filter){
+            $query->where("category_id", $category_filter);
+        })->paginate(10);
+
+        $posts->appends(["search" => $search, "category" => $category_filter]);
+
+        if ($request->isJson())
+            return response()->json($posts);
+
+        return view("pages.post.index", compact("posts", "search", "categories", "category_filter"));
     }
 
     /**

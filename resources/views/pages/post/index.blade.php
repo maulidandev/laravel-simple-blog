@@ -13,13 +13,41 @@
         <div class="card-body">
             @include('layouts._alert')
 
+            <form>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Filter</label>
+                            <div class="input-group">
+                                <select name="category" class="form-control">
+                                    <option value="">Filter Category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ $category->id == $category_filter ? "selected" : "" }}>{{ $category->title }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="offset-md-5 col-md-4">
+                        <div class="form-group">
+                            <label>Search</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" value="{{ $search }}">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
             <table class="table">
                 <tr>
                     <th>No</th>
                     <th>Title</th>
                     <th>Category</th>
                     <th>Content</th>
-                    <th>#</th>
+                    <th width="1">#</th>
                 </tr>
 
                 @php $index = $posts->firstItem() @endphp

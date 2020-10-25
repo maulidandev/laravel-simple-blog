@@ -19,7 +19,10 @@ class Category extends Model
         parent::boot();
 
         static::deleting(function($category) {
-             $category->posts()->delete();
+            $ids = $category->posts()->pluck("id")->toArray();
+
+            // set category id to default (uncategorize)
+            Post::whereIn('id', $ids)->update(['category_id' => 1]);
         });
     }
 }

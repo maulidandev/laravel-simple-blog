@@ -24,11 +24,10 @@ class PostFactory extends Factory
     public function definition()
     {
         $title = $this->faker->title;
-        $category = Category::factory()->create();
 
         return [
             "title" => $title,
-            "category_id" => $category->id,
+            "category_id" => Category::factory(),
             "slug" => Str::slug($title),
             "content" => $this->faker->text,
         ];
