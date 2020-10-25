@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Business\CategoryBusiness;
+use App\Helpers\CategoryHelper;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -75,6 +76,9 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        if (CategoryHelper::isUncategorize($id))
+            return abort(403);
+
         $category = Category::findOrFail($id);
 
         return view("pages.category.edit", compact("category"));
@@ -89,6 +93,9 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, $id)
     {
+        if (CategoryHelper::isUncategorize($id))
+            return abort(403);
+
         $category = Category::findOrFail($id);
 
         $request["slug"] = Str::slug($request->title);
