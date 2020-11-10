@@ -24,7 +24,7 @@ class EditUserControllerTest extends TestCase
     public function testAccessEditPage()
     {
         $user = User::factory()->create();
-        $response = $this->get(route("users.edit", $user->id));
+        $response = $this->get(route("admin.users.edit", $user->id));
 
         $response->assertStatus(200);
     }
@@ -37,14 +37,14 @@ class EditUserControllerTest extends TestCase
         $user = User::factory()->create();
         $data = $this->getValidData($inputFields);
 
-        $response = $this->from(route("users.create"))
-            ->put(route("users.update", $user->id), $data);
+        $response = $this->from(route("admin.users.create"))
+            ->put(route("admin.users.update", $user->id), $data);
 
         $response->assertStatus(302);
         $this->assertDatabaseHas("users", [
             "email" => $data["email"]
         ]);
-        $response->assertRedirect(route("users.index"));
+        $response->assertRedirect(route("admin.users.index"));
     }
 
     public function ValidDataProvider(){
@@ -65,12 +65,12 @@ class EditUserControllerTest extends TestCase
 
         $data = $this->getValidData($inputFields);
 
-        $response = $this->from(route("users.create"))
-            ->put(route("users.update", $user->id), $data);
+        $response = $this->from(route("admin.users.create"))
+            ->put(route("admin.users.update", $user->id), $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors([$errorFields]);
-        $response->assertRedirect(route("users.create"));
+        $response->assertRedirect(route("admin.users.create"));
     }
 
     public function validationDataProvider(){

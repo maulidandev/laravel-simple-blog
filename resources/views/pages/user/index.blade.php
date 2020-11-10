@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="float-right">
-        <a href="{{ route("users.create") }}" class="btn btn-primary">Create User</a>
+        <a href="{{ route("admin.users.create") }}" class="btn btn-primary">Create User</a>
     </div>
     <div class="clearfix"></div>
 
@@ -57,18 +57,18 @@
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->role->name }}</td>
                         <td>
-                            <form class="float-left" action="{{ route("users.destroy", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
+                            <form class="float-left" action="{{ route("admin.users.destroy", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
                                 @csrf
                                 <input type="hidden" value="delete" name="_method">
 {{--                                @if(!CategoryHelper::isUncategorize($user->id))--}}
                                     <div class="btn-group">
-                                        <a href="{{ route("users.edit", $user->id) }}" class="btn btn-default border">Edit</a>
+                                        <a href="{{ route("admin.users.edit", $user->id) }}" class="btn btn-default border">Edit</a>
                                         <button type="submit" class="btn btn-danger">Delete</button>
                                         &nbsp;
                                     </div>
 {{--                                @endif--}}
                             </form>
-                            <form class="float-left" action="{{ route("users.block", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
+                            <form class="float-left" action="{{ route("admin.users.block", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
                                 @csrf
 
                                 @if(!$user->is_block)

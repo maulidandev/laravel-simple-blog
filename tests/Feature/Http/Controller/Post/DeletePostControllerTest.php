@@ -21,15 +21,15 @@ class DeletePostControllerTest extends TestCase
         $post = Post::factory()->create();
         $this->assertDatabaseHas("posts", ["id" => $post->id]);
 
-        $response = $this->from(route("posts.index", $post->id))
-            ->post(route("posts.destroy", $post->id), [
+        $response = $this->from(route("admin.posts.index", $post->id))
+            ->post(route("admin.posts.destroy", $post->id), [
                 "_method" => "delete"
             ]);
 
         $this->assertDatabaseCount("posts", 0);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("posts.index"));
+        $response->assertRedirect(route("admin.posts.index"));
     }
 
     /**
@@ -38,7 +38,7 @@ class DeletePostControllerTest extends TestCase
     public function testUsingInvalidID(){
         $this->assertDatabaseMissing("posts", ["id" => 1]);
 
-        $response = $this->json("delete", route("posts.destroy", 1));
+        $response = $this->json("delete", route("admin.posts.destroy", 1));
 
         $response->assertStatus(404);
     }

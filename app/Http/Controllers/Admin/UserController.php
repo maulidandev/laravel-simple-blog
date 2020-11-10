@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\Role;
 use App\Models\User;
@@ -63,7 +64,7 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route("users.index")->with("success", "User created!");
+        return redirect()->route("admin.users.index")->with("success", "User created!");
     }
 
     /**
@@ -103,7 +104,7 @@ class UserController extends Controller
 
         User::where("id", $id)->update($data);
 
-        return redirect()->route("users.index")->with("success", "User updated!");
+        return redirect()->route("admin.users.index")->with("success", "User updated!");
     }
 
     /**
@@ -117,7 +118,7 @@ class UserController extends Controller
         $user = User::findOrfail($id);
         $user->delete();
 
-        return redirect()->route("users.index")->with("success", "User deleted!");
+        return redirect()->route("admin.users.index")->with("success", "User deleted!");
     }
 
     public function blockUser($id){
@@ -125,6 +126,6 @@ class UserController extends Controller
         $user->is_block = !$user->is_block;
         $user->save();
 
-        return redirect()->route("users.index")->with("success", "User blocked!");
+        return redirect()->route("admin.users.index")->with("success", "User blocked!");
     }
 }

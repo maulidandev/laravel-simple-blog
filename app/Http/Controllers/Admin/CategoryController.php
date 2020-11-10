@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Business\CategoryBusiness;
 use App\Helpers\CategoryHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ class CategoryController extends Controller
     {
         CategoryBusiness::store($request->title);
 
-        return redirect()->route("categories.index")->with("success", "Category created!");
+        return redirect()->route("admin.categories.index")->with("success", "Category created!");
     }
 
     /**
@@ -102,7 +103,7 @@ class CategoryController extends Controller
 
         $category->update($request->only("title", "slug"));
 
-        return redirect()->route("categories.index")->with("success", "Category updated!");
+        return redirect()->route("admin.categories.index")->with("success", "Category updated!");
     }
 
     /**
@@ -119,6 +120,6 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->delete();
 
-        return redirect()->route("categories.index")->with("success", "Category deleted!");
+        return redirect()->route("admin.categories.index")->with("success", "Category deleted!");
     }
 }

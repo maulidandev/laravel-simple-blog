@@ -22,7 +22,7 @@ class IndexPostControllerTest extends TestCase
         Post::factory()->count(10)->create();
 
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("posts.index"));
+            ->json("get", route("admin.posts.index"));
 
         $response->assertStatus(200);
         $response->assertJsonCount(10, "data.*.title");
@@ -37,12 +37,12 @@ class IndexPostControllerTest extends TestCase
         ])->create();
 
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("posts.index") . "?search=".$post->title);
+            ->json("get", route("admin.posts.index") . "?search=".$post->title);
 
         $response->assertStatus(200);
         $response->assertJsonCount(1, "data.*.title");
         $response->assertJson([
-            "first_page_url" => route("posts.index") . "?search=".str_replace(" ", "%20", $post->title)."&page=1"
+            "first_page_url" => route("admin.posts.index") . "?search=".str_replace(" ", "%20", $post->title)."&page=1"
         ]);
     }
 
@@ -61,12 +61,12 @@ class IndexPostControllerTest extends TestCase
         $this->assertDatabaseCount("categories", 2);
 
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("posts.index") . "?category=".$category->id);
+            ->json("get", route("admin.posts.index") . "?category=".$category->id);
 
         $response->assertStatus(200);
         $response->assertJsonCount(5, "data.*.title");
         $response->assertJson([
-            "first_page_url" => route("posts.index") . "?category=".$category->id."&page=1"
+            "first_page_url" => route("admin.posts.index") . "?category=".$category->id."&page=1"
         ]);
     }
 }

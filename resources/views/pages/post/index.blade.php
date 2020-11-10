@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="float-right">
-        <a href="{{ route("posts.create") }}" class="btn btn-primary">Create Post</a>
+        <a href="{{ route("admin.posts.create") }}" class="btn btn-primary">Create Post</a>
     </div>
     <div class="clearfix"></div>
 
@@ -58,12 +58,12 @@
                         <td>{{ $post->category->title }}</td>
                         <td>{{ $post->content }}</td>
                         <td>
-                            <form action="{{ route("posts.destroy", $post->id) }}" method="post" onsubmit="javascrpt:return confirm('Are you sure?');">
+                            <form action="{{ route("admin.posts.destroy", $post->id) }}" method="post" onsubmit="javascrpt:return confirm('Are you sure?');">
                                 @csrf
                                 <input type="hidden" value="delete" name="_method">
 
                                 <div class="btn-group">
-                                    <a href="{{ route("posts.edit", $post->id) }}" class="btn btn-default">Edit</a>
+                                    <a href="{{ route("admin.posts.edit", $post->id) }}" class="btn btn-default">Edit</a>
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </div>
                             </form>

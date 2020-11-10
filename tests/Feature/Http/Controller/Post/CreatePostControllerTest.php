@@ -14,7 +14,7 @@ class CreatePostControllerTest extends TestCase
     use RefreshDatabase;
 
     public function testAccessCreateForm(){
-        $response = $this->get(route("posts.create"));
+        $response = $this->get(route("admin.posts.create"));
 
         $response->assertStatus(200);
     }
@@ -32,13 +32,13 @@ class CreatePostControllerTest extends TestCase
         $this->assertDatabaseHas("categories", ["id" => $category->id]);
         $this->assertDatabaseCount("posts", 0);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store"), $data);
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store"), $data);
 
         $this->assertDatabaseHas("posts", $data);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("posts.index"));
+        $response->assertRedirect(route("admin.posts.index"));
     }
 
     public function testUsingInvalidTitle(){
@@ -47,8 +47,8 @@ class CreatePostControllerTest extends TestCase
         $this->assertDatabaseHas("categories", ["id" => $category->id]);
         $this->assertDatabaseCount("posts", 0);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store"), [
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store"), [
                 "title" => $this->faker->words(500, true),
                 "category_id" => $category->id,
                 "content" => $this->faker->text
@@ -58,7 +58,7 @@ class CreatePostControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("posts.create"));
+        $response->assertRedirect(route("admin.posts.create"));
     }
 
     public function testUsingNotUniqeTitle(){
@@ -67,14 +67,14 @@ class CreatePostControllerTest extends TestCase
 
         $data = $this->getCreateFields(["title" => $post->title]);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store"), $data);
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store"), $data);
 
         $this->assertDatabaseCount("posts", 1);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("posts.create"));
+        $response->assertRedirect(route("admin.posts.create"));
     }
 
     /**
@@ -86,14 +86,14 @@ class CreatePostControllerTest extends TestCase
 
         $this->assertDatabaseMissing("categories", ["id" => $data["category_id"]]);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store"), $data);
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store"), $data);
 
         $this->assertDatabaseCount("posts", 0);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["category_id"]);
-        $response->assertRedirect(route("posts.create"));
+        $response->assertRedirect(route("admin.posts.create"));
     }
 
     /**
@@ -102,8 +102,8 @@ class CreatePostControllerTest extends TestCase
     public function testWithNewCategory(){
         $data = $this->getCreateFields(["category_id" => -1, "new_category" => $this->faker->unique()->words(3, true)]);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store", $data));
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store", $data));
 
         $this->assertDatabaseHas("categories", [
             "title" => $data["new_category"]
@@ -114,7 +114,7 @@ class CreatePostControllerTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("posts.index"));
+        $response->assertRedirect(route("admin.posts.index"));
     }
 
     /**
@@ -123,8 +123,8 @@ class CreatePostControllerTest extends TestCase
     public function testWithInvalidNewCategory(){
         $data = $this->getCreateFields(["category_id" => -1]);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store", $data));
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store", $data));
 
         $this->assertDatabaseMissing("posts", [
             "title" => $data["title"]
@@ -132,7 +132,7 @@ class CreatePostControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["new_category"]);
-        $response->assertRedirect(route("posts.create"));
+        $response->assertRedirect(route("admin.posts.create"));
     }
 
     /**
@@ -141,8 +141,8 @@ class CreatePostControllerTest extends TestCase
     public function testWithNewCategoryInvalidLength(){
         $data = $this->getCreateFields(["category_id" => -1, "new_category" => $this->faker->unique()->words(100, true)]);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store", $data));
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store", $data));
 
         $this->assertDatabaseMissing("categories", [
             "title" => $data["new_category"]
@@ -154,7 +154,7 @@ class CreatePostControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["new_category"]);
-        $response->assertRedirect(route("posts.create"));
+        $response->assertRedirect(route("admin.posts.create"));
     }
 
     /**
@@ -163,8 +163,8 @@ class CreatePostControllerTest extends TestCase
     public function testWithNotUniqueNewCategory(){
         $data = $this->getCreateFields(["category_id" => -1, "new_category" => Category::factory()->create()->title]);
 
-        $response = $this->from(route("posts.create"))
-            ->post(route("posts.store", $data));
+        $response = $this->from(route("admin.posts.create"))
+            ->post(route("admin.posts.store", $data));
 
         $this->assertDatabaseMissing("posts", [
             "title" => $data["title"]
@@ -172,7 +172,7 @@ class CreatePostControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["new_category"]);
-        $response->assertRedirect(route("posts.create"));
+        $response->assertRedirect(route("admin.posts.create"));
     }
 
     private function getCreateFields($overrides = []){

@@ -23,7 +23,7 @@ class CreateUserControllerTest extends TestCase
 
     public function testAccessCreatePage()
     {
-        $response = $this->get(route("users.create"));
+        $response = $this->get(route("admin.users.create"));
 
         $response->assertStatus(200);
     }
@@ -31,14 +31,14 @@ class CreateUserControllerTest extends TestCase
     public function testCreateWithValidData(){
         $data = $this->getValidData();
 
-        $response = $this->from(route("users.create"))
-            ->post(route("users.store"), $data);
+        $response = $this->from(route("admin.users.create"))
+            ->post(route("admin.users.store"), $data);
 
         $response->assertStatus(302);
         $this->assertDatabaseHas("users", [
             "email" => $data["email"]
         ]);
-        $response->assertRedirect(route("users.index"));
+        $response->assertRedirect(route("admin.users.index"));
     }
 
     /**
@@ -50,13 +50,13 @@ class CreateUserControllerTest extends TestCase
 
         $data = $this->getValidData($inputFields);
 
-        $response = $this->from(route("users.create"))
-            ->post(route("users.store"), $data);
+        $response = $this->from(route("admin.users.create"))
+            ->post(route("admin.users.store"), $data);
 
         $this->assertDatabaseCount("users", 0);
         $response->assertStatus(302);
         $response->assertSessionHasErrors([$errorFields]);
-        $response->assertRedirect(route("users.create"));
+        $response->assertRedirect(route("admin.users.create"));
     }
 
     public function validationDataProvider(){

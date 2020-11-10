@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Business\PostBusiness;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
@@ -45,7 +46,7 @@ class PostController extends Controller
     {
         $categories = PostBusiness::getAllCategories();
         $post = new Post();
-        $action = route("posts.store");
+        $action = route("admin.posts.store");
 
         return view("pages.post.create", compact("categories", "post", "action"));
     }
@@ -67,7 +68,7 @@ class PostController extends Controller
         $data = PostBusiness::insertNewCategory($data);
         Post::create($data);
 
-        return redirect()->route("posts.index")->with("success", "Post created!");
+        return redirect()->route("admin.posts.index")->with("success", "Post created!");
     }
 
     /**
@@ -91,7 +92,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $categories = PostBusiness::getAllCategories();
-        $action = route("posts.update", $post->id);
+        $action = route("admin.posts.update", $post->id);
 
         return view("pages.post.edit", compact("post", "categories", "action"));
     }
@@ -116,7 +117,7 @@ class PostController extends Controller
         $data = PostBusiness::insertNewCategory($data);
         $post->update($data);
 
-        return redirect()->route("posts.index")->with("success", "Post updated!");
+        return redirect()->route("admin.posts.index")->with("success", "Post updated!");
     }
 
     /**
@@ -130,6 +131,6 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
 
-        return redirect()->route("posts.index")->with("success", "Post deleted!");
+        return redirect()->route("admin.posts.index")->with("success", "Post deleted!");
     }
 }

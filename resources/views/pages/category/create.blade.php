@@ -8,7 +8,7 @@
                     <h2>Create Category</h2>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route("categories.store") }}" method="post">
+                    <form action="{{ route("admin.categories.store") }}" method="post">
                         @csrf
 
                         @include("pages.category._form")

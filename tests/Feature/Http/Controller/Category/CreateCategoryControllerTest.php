@@ -13,7 +13,7 @@ class CreateCategoryControllerTest extends TestCase
     use RefreshDatabase;
 
     public function testAccessCreateForm(){
-        $response = $this->get(route("categories.create"));
+        $response = $this->get(route("admin.categories.create"));
 
         $response->assertStatus(200);
     }
@@ -22,8 +22,8 @@ class CreateCategoryControllerTest extends TestCase
     {
         $title = $this->faker->words(3, true);
 
-        $response = $this->from(route("categories.create"))
-            ->post(route("categories.store"), [
+        $response = $this->from(route("admin.categories.create"))
+            ->post(route("admin.categories.store"), [
                 "title" => $title
             ]);
 
@@ -32,7 +32,7 @@ class CreateCategoryControllerTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("categories.index"));
+        $response->assertRedirect(route("admin.categories.index"));
     }
 
     public function testUsingInvalidTitle(){
@@ -40,14 +40,14 @@ class CreateCategoryControllerTest extends TestCase
             "title" => $this->faker->words(500, true)
         ];
 
-        $response = $this->from(route("categories.create"))
-            ->post(route("categories.store"), $data);
+        $response = $this->from(route("admin.categories.create"))
+            ->post(route("admin.categories.store"), $data);
 
         $this->assertDatabaseMissing('categories', $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("categories.create"));
+        $response->assertRedirect(route("admin.categories.create"));
     }
 
     public function testUsingNotUniqueTitle(){
@@ -57,8 +57,8 @@ class CreateCategoryControllerTest extends TestCase
             'title' => $category->title,
         ]);
 
-        $response = $this->from(route("categories.create"))
-            ->post(route("categories.store"), [
+        $response = $this->from(route("admin.categories.create"))
+            ->post(route("admin.categories.store"), [
                 "title" => $category->title
             ]);
 
@@ -66,6 +66,6 @@ class CreateCategoryControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("categories.create"));
+        $response->assertRedirect(route("admin.categories.create"));
     }
 }
