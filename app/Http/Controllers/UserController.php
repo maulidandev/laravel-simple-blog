@@ -119,4 +119,12 @@ class UserController extends Controller
 
         return redirect()->route("users.index")->with("success", "User deleted!");
     }
+
+    public function blockUser($id){
+        $user = User::findOrFail($id);
+        $user->is_block = !$user->is_block;
+        $user->save();
+
+        return redirect()->route("users.index")->with("success", "User blocked!");
+    }
 }

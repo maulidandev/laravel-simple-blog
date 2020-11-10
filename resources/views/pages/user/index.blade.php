@@ -47,7 +47,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th width="1">#</th>
+                    <th style="width: 236px;">#</th>
                 </tr>
                 @php $index = $users->firstItem() @endphp
                 @forelse ($users as $user)
@@ -57,15 +57,25 @@
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->role->name }}</td>
                         <td>
-                            <form action="{{ route("users.destroy", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
+                            <form class="float-left" action="{{ route("users.destroy", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
                                 @csrf
                                 <input type="hidden" value="delete" name="_method">
 {{--                                @if(!CategoryHelper::isUncategorize($user->id))--}}
                                     <div class="btn-group">
                                         <a href="{{ route("users.edit", $user->id) }}" class="btn btn-default border">Edit</a>
                                         <button type="submit" class="btn btn-danger">Delete</button>
+                                        &nbsp;
                                     </div>
 {{--                                @endif--}}
+                            </form>
+                            <form class="float-left" action="{{ route("users.block", $user->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
+                                @csrf
+
+                                @if(!$user->is_block)
+                                    <button type="submit" class="btn btn-primary">Block</button>
+                                @else
+                                    <button type="submit" class="btn border">UnBlock</button>
+                                @endif
                             </form>
                         </td>
                     </tr>
