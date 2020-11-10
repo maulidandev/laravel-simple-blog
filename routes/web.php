@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,5 +20,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource("posts", PostController::class)->except(["show"]);
-Route::resource("categories", CategoryController::class)->except(["show"]);
+Route::group(["prefix" => "admin"], function (){
+    Route::resource("posts", PostController::class)->except(["show"]);
+    Route::resource("categories", CategoryController::class)->except(["show"]);
+
+    Route::resource("users", UserController::class)->except(["show"]);
+    Route::post("users/block/{id}", [UserController::class, "blockUser"])->name("users.block");
+});
