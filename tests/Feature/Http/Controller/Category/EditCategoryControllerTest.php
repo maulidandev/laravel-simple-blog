@@ -23,7 +23,7 @@ class EditCategoryControllerTest extends TestCase
 
     public function testAccessEditForm(){
         $category = Category::factory()->create();
-        $response = $this->get(route("categories.edit", $category->id));
+        $response = $this->get(route("admin.categories.edit", $category->id));
 
         $response->assertStatus(200);
     }
@@ -43,8 +43,8 @@ class EditCategoryControllerTest extends TestCase
 
         $title = $this->faker->words(3, true);
 
-        $response = $this->from(route("categories.edit", $category->id))
-            ->post(route("categories.update", $category->id), [
+        $response = $this->from(route("admin.categories.edit", $category->id))
+            ->post(route("admin.categories.update", $category->id), [
                   "title" => $title,
                 "_method" => "put"
             ]);
@@ -55,7 +55,7 @@ class EditCategoryControllerTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("categories.index"));
+        $response->assertRedirect(route("admin.categories.index"));
     }
 
     public function testUsingInvalidTitle(){
@@ -67,8 +67,8 @@ class EditCategoryControllerTest extends TestCase
 
         $title = $this->faker->unique()->words(100, true);
 
-        $response = $this->from(route("categories.edit", $category->id))
-            ->post(route("categories.update", $category->id), [
+        $response = $this->from(route("admin.categories.edit", $category->id))
+            ->post(route("admin.categories.update", $category->id), [
                 "title" => $title,
                 "_method" => "put"
             ]);
@@ -80,27 +80,27 @@ class EditCategoryControllerTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("categories.edit", $category->id));
+        $response->assertRedirect(route("admin.categories.edit", $category->id));
     }
 
     public function testUsingNotUniqueTitle(){
         $categories = Category::factory(2)->create();
 
-        $response = $this->from(route("categories.edit", $categories[0]->id))
-            ->post(route("categories.update", $categories[0]->id), [
+        $response = $this->from(route("admin.categories.edit", $categories[0]->id))
+            ->post(route("admin.categories.update", $categories[0]->id), [
                 "title" => $categories[1]->title,
                 "_method" => "put"
             ]);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("categories.edit", $categories[0]->id));
+        $response->assertRedirect(route("admin.categories.edit", $categories[0]->id));
     }
 
     public function testAccessNotValidID(){
         $category = Category::factory()->create();
 
-        $response = $this->get(route("categories.edit", $category->id+1));
+        $response = $this->get(route("admin.categories.edit", $category->id+1));
 
         $response->assertStatus(404);
     }
@@ -108,8 +108,8 @@ class EditCategoryControllerTest extends TestCase
     public function testUsingNotValidID(){
         $category = Category::factory()->create();
 
-        $response = $this->from(route("categories.edit", $category->id+100))
-            ->json("put", route("categories.update", ($category->id+100)), [
+        $response = $this->from(route("admin.categories.edit", $category->id+100))
+            ->json("put", route("admin.categories.update", ($category->id+100)), [
                 "title" => "invalid"
             ]);
 
@@ -117,7 +117,7 @@ class EditCategoryControllerTest extends TestCase
     }
 
     public function testAccessEditFormUncategorize(){
-        $response = $this->get(route("categories.edit", CategoryHelper::getUncategorizeID()));
+        $response = $this->get(route("admin.categories.edit", CategoryHelper::getUncategorizeID()));
 
         $response->assertStatus(403);
     }
@@ -125,8 +125,8 @@ class EditCategoryControllerTest extends TestCase
     public function testEditUncategorize(){
         $id = CategoryHelper::getUncategorizeID();
 
-        $response = $this->from(route("categories.edit", $id))
-            ->json("put", route("categories.update", $id), [
+        $response = $this->from(route("admin.categories.edit", $id))
+            ->json("put", route("admin.categories.update", $id), [
                 "title" => "new title"
             ]);
 

@@ -8,7 +8,7 @@
                     <h2>Edit Category</h2>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route("categories.update", $category->id) }}" method="post">
+                    <form action="{{ route("admin.categories.update", $category->id) }}" method="post">
                         <input type="hidden" name="_method" value="put">
                         @csrf
 

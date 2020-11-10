@@ -32,8 +32,8 @@ class DeleteCategoryControllerTest extends TestCase
             "id" => $category->id
         ]);
 
-        $response = $this->from(route("categories.index"))
-            ->post(route("categories.destroy", $category->id), [
+        $response = $this->from(route("admin.categories.index"))
+            ->post(route("admin.categories.destroy", $category->id), [
                 "_method" => "delete"
             ]);
 
@@ -42,7 +42,7 @@ class DeleteCategoryControllerTest extends TestCase
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("categories.index"));
+        $response->assertRedirect(route("admin.categories.index"));
     }
 
     public function testDeleteInvalidID(){
@@ -52,14 +52,14 @@ class DeleteCategoryControllerTest extends TestCase
             "id" => $category->id+1
         ]);
 
-        $response = $this->json("delete", route("categories.destroy", $category->id+1));
+        $response = $this->json("delete", route("admin.categories.destroy", $category->id+1));
 
         $response->assertStatus(404);
     }
 
     public function testDeleteUncategorize(){
-        $response = $this->from(route("categories.index"))
-            ->delete(route("categories.destroy", 1));
+        $response = $this->from(route("admin.categories.index"))
+            ->delete(route("admin.categories.destroy", 1));
 
         $response->assertStatus(403);
     }
@@ -68,14 +68,14 @@ class DeleteCategoryControllerTest extends TestCase
         $category = Category::factory()->create();
         $post = Post::factory()->state(["category_id" => $category->id])->create();
 
-        $response = $this->from(route("categories.index"))
-            ->delete(route("categories.destroy", $category->id));
+        $response = $this->from(route("admin.categories.index"))
+            ->delete(route("admin.categories.destroy", $category->id));
 
         $response->assertStatus(302);
         $this->assertDatabaseHas("posts", [
             "id" => $post->id,
             "category_id" => 1
         ]);
-        $response->assertRedirect(route("categories.index"));
+        $response->assertRedirect(route("admin.categories.index"));
     }
 }

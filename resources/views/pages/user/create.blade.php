@@ -8,7 +8,7 @@
                     <h2>Create User</h2>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route("users.store") }}" method="post">
+                    <form action="{{ route("admin.users.store") }}" method="post">
                         @csrf
 
                         @include("pages.user._form")

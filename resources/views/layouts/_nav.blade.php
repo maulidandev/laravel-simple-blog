@@ -13,13 +13,13 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route("posts.index") }}">Post</a>
+                    <a class="nav-link" href="{{ route("admin.posts.index") }}">Post</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route("categories.index") }}">Category</a>
+                    <a class="nav-link" href="{{ route("admin.categories.index") }}">Category</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route("users.index") }}">User Management</a>
+                    <a class="nav-link" href="{{ route("admin.users.index") }}">User Management</a>
                 </li>
             </ul>
         </div>

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="float-right">
-        <a href="{{ route("categories.create") }}" class="btn btn-primary">Create Category</a>
+        <a href="{{ route("admin.categories.create") }}" class="btn btn-primary">Create Category</a>
     </div>
     <div class="clearfix"></div>
 
@@ -41,13 +41,13 @@
                         <td>{{ $category->title }}</td>
                         <td>{{ $category->slug }}</td>
                         <td>
-                            <form action="{{ route("categories.destroy", $category->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
+                            <form action="{{ route("admin.categories.destroy", $category->id) }}" method="post" onsubmit="javascript:return confirm('Are you sure?');">
                                 @csrf
                                 <input type="hidden" value="delete" name="_method">
 
                                 @if(!CategoryHelper::isUncategorize($category->id))
                                     <div class="btn-group">
-                                        <a href="{{ route("categories.edit", $category->id) }}" class="btn btn-default border">Edit</a>
+                                        <a href="{{ route("admin.categories.edit", $category->id) }}" class="btn btn-default border">Edit</a>
                                         <button type="submit" class="btn btn-danger">Delete</button>
                                     </div>
                                 @endif

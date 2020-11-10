@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(["prefix" => "admin"], function (){
+Route::name("admin.")->prefix("admin")->group(function (){
     Route::resource("posts", PostController::class)->except(["show"]);
     Route::resource("categories", CategoryController::class)->except(["show"]);
 

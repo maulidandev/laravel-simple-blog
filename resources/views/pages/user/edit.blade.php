@@ -8,7 +8,7 @@
                     <h2>Edit User</h2>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route("users.update", $user->id) }}" method="post">
+                    <form action="{{ route("admin.users.update", $user->id) }}" method="post">
                         @csrf
                         <input type="hidden" name="_method" value="put">
 

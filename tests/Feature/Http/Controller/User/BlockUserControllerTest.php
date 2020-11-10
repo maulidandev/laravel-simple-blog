@@ -14,10 +14,10 @@ class BlockUserControllerTest extends TestCase
     public function testBlockUser()
     {
         $user = User::factory()->create();
-        $response = $this->post(route("users.block", $user->id));
+        $response = $this->post(route("admin.users.block", $user->id));
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("users.index"));
+        $response->assertRedirect(route("admin.users.index"));
         $this->assertDatabaseHas("users", [
             "id" => $user->id,
             "is_block" => 1
@@ -29,10 +29,10 @@ class BlockUserControllerTest extends TestCase
         $user = User::factory()->create([
             "is_block" => 1
         ]);
-        $response = $this->post(route("users.block", $user->id));
+        $response = $this->post(route("admin.users.block", $user->id));
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("users.index"));
+        $response->assertRedirect(route("admin.users.index"));
         $this->assertDatabaseHas("users", [
             "id" => $user->id,
             "is_block" => 0
@@ -41,7 +41,7 @@ class BlockUserControllerTest extends TestCase
 
     public function testInvalidID()
     {
-        $response = $this->post(route("users.block", 1));
+        $response = $this->post(route("admin.users.block", 1));
 
         $response->assertStatus(404);
     }

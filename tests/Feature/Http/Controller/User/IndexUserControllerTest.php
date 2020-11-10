@@ -31,7 +31,7 @@ class IndexUserControllerTest extends TestCase
 
         // get json response
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("users.index"));
+            ->json("get", route("admin.users.index"));
 
         // assert status
         $response->assertStatus(200);
@@ -53,7 +53,7 @@ class IndexUserControllerTest extends TestCase
 
         // get json response
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("users.index") . "?search=john");
+            ->json("get", route("admin.users.index") . "?search=john");
 
         // assert status
         $response->assertStatus(200);
@@ -75,7 +75,7 @@ class IndexUserControllerTest extends TestCase
 
         // get json response
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("users.index") . "?search=john@email.com");
+            ->json("get", route("admin.users.index") . "?search=john@email.com");
 
         // assert status
         $response->assertStatus(200);
@@ -99,7 +99,7 @@ class IndexUserControllerTest extends TestCase
 
         // get json response
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("users.index") . "?role=1");
+            ->json("get", route("admin.users.index") . "?role=1");
 
         // assert status
         $response->assertStatus(200);

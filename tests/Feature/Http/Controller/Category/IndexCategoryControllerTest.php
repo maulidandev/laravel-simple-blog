@@ -24,7 +24,7 @@ class IndexCategoryControllerTest extends TestCase
         $this->assertDatabaseCount("categories", 10);
 
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("categories.index"));
+            ->json("get", route("admin.categories.index"));
 
         $response->assertStatus(200);
         $response->assertJsonCount(10, "data.*.title");
@@ -36,12 +36,12 @@ class IndexCategoryControllerTest extends TestCase
         Category::factory()->count(10)->create();
 
         $response = $this->withHeader("Content-Type", "application/json")
-            ->json("get", route("categories.index") . "?search=" . $category->title);
+            ->json("get", route("admin.categories.index") . "?search=" . $category->title);
 
         $response->assertStatus(200);
         $response->assertJsonCount(1, "data.*.title");
         $response->assertJson([
-            "first_page_url" => route("categories.index") . "?search=".str_replace(" ", "%20", $category->title)."&page=1"
+            "first_page_url" => route("admin.categories.index") . "?search=".str_replace(" ", "%20", $category->title)."&page=1"
         ]);
     }
 }

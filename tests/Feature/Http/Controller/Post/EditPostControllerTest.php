@@ -15,7 +15,7 @@ class EditPostControllerTest extends TestCase
 
     public function testAccessEditForm(){
         $post = Post::factory()->create();
-        $response = $this->get(route("posts.edit", $post->id));
+        $response = $this->get(route("admin.posts.edit", $post->id));
 
         $response->assertStatus(200);
     }
@@ -37,14 +37,14 @@ class EditPostControllerTest extends TestCase
             "content" => $post->content,
         ]);
 
-        $response = $this->from(route("posts.edit", $post->id))
-            ->post(route("posts.update", $post->id), $data);
+        $response = $this->from(route("admin.posts.edit", $post->id))
+            ->post(route("admin.posts.update", $post->id), $data);
 
         unset($data["_method"]);
         $this->assertDatabaseHas("posts", $data);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route("posts.index"));
+        $response->assertRedirect(route("admin.posts.index"));
     }
 
     public function testUsingInvalidData()
@@ -59,15 +59,15 @@ class EditPostControllerTest extends TestCase
             "content" => $post->content,
         ]);
 
-        $response = $this->from(route("posts.edit", $post->id))
-            ->post(route("posts.update", $post->id), $data);
+        $response = $this->from(route("admin.posts.edit", $post->id))
+            ->post(route("admin.posts.update", $post->id), $data);
 
         unset($data["_method"]);
         $this->assertDatabaseMissing("posts", $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("posts.edit", $post->id));
+        $response->assertRedirect(route("admin.posts.edit", $post->id));
     }
 
     public function testUsingNotUniqueTitle()
@@ -81,12 +81,12 @@ class EditPostControllerTest extends TestCase
 
         $data = $this->getEditPostData(["title" => $posts[1]]);
 
-        $response = $this->from(route("posts.edit", $posts[0]->id))
-            ->post(route("posts.update", $posts[0]->id), $data);
+        $response = $this->from(route("admin.posts.edit", $posts[0]->id))
+            ->post(route("admin.posts.update", $posts[0]->id), $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["title"]);
-        $response->assertRedirect(route("posts.edit", $posts[0]->id));
+        $response->assertRedirect(route("admin.posts.edit", $posts[0]->id));
     }
 
     // access edit form using invalid id (id not exist)
@@ -95,7 +95,7 @@ class EditPostControllerTest extends TestCase
 
         $this->assertDatabaseMissing("posts", ["id" => $post->id+1]);
 
-        $response = $this->get(route("posts.edit", $post->id+1));
+        $response = $this->get(route("admin.posts.edit", $post->id+1));
 
         $response->assertStatus(404);
     }
@@ -106,7 +106,7 @@ class EditPostControllerTest extends TestCase
 
         $this->assertDatabaseMissing("posts", ["id" => $post->id+1]);
 
-        $response = $this->json("put", route("posts.update", $post->id+1), $this->getEditPostData());
+        $response = $this->json("put", route("admin.posts.update", $post->id+1), $this->getEditPostData());
 
         $response->assertStatus(404);
     }
@@ -120,12 +120,12 @@ class EditPostControllerTest extends TestCase
 
         $this->assertDatabaseMissing("categories", ["id" => $data["category_id"]]);
 
-        $response = $this->from(route("posts.edit", $post->id))
-            ->post(route("posts.update", $post->id), $data);
+        $response = $this->from(route("admin.posts.edit", $post->id))
+            ->post(route("admin.posts.update", $post->id), $data);
 
         $response->assertStatus(302);
         $response->assertSessionHasErrors(["category_id"]);
-        $response->assertRedirect(route("posts.edit", $post->id));
+        $response->assertRedirect(route("admin.posts.edit", $post->id));
     }
 
     private function getEditPostData($overrides = []){
