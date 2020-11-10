@@ -26,8 +26,23 @@ class UserRequest extends FormRequest
         return [
             "name" => "required|max:191",
             "email" => "required|confirmed|email",
-            "password" => "required|confirmed|min:8",
+            "password" => $this->passwordRules(),
             "role" => "required|exists:roles,id",
         ];
+    }
+
+    private function passwordRules(){
+        $rule = "confirmed|min:8";
+
+        switch ($this->method()){
+            case "POST":
+                $rule = "$rule|required";
+                break;
+            case "PUT":
+                $rule = "$rule|nullable";
+                break;
+        }
+
+        return $rule;
     }
 }

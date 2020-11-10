@@ -67,17 +67,6 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -85,7 +74,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roles = Role::orderBy("name", "asc")->get();
+
+        return view("pages.user.edit", compact("user", "roles"));
     }
 
     /**
@@ -95,9 +87,23 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        //
+        $data = $request->only("name", "email", "password", "role");
+
+        // role
+        $data["role_id"] = $data["role"];
+        unset($data["role"]);
+
+        // password
+        if (!empty($data["password"]))
+            $data["password"] = bcrypt($data["password"]);
+        else
+            unset($data["password"]);
+
+        User::where("id", $id)->update($data);
+
+        return redirect()->route("users.index")->with("success", "User updated!");
     }
 
     /**
