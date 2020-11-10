@@ -20,6 +20,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource("posts", PostController::class)->except(["show"]);
-Route::resource("categories", CategoryController::class)->except(["show"]);
-Route::resource("users", UserController::class)->except(["show"]);
+Route::group(["prefix" => "admin"], function (){
+    Route::resource("posts", PostController::class)->except(["show"]);
+    Route::resource("categories", CategoryController::class)->except(["show"]);
+    Route::resource("users", UserController::class)->except(["show"]);
+});
